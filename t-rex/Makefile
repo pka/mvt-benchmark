@@ -1,21 +1,23 @@
 sw = t-rex
+exec = t_rex
+#exec = docker run -v $$PWD:/var/data/in:ro -e TREX_DATASOURCE_URL=postgresql://$$USER@172.17.0.1/mvtbench sourcepole/t-rex
 result_csv = results_seed.csv
 ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008
 
 seed_world: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) t_rex generate --config mvtbench.toml --maxzoom=6 --extent=-180,-90,180,90
+	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=-180,-90,180,90
 	@echo Statistics written to $(result_csv)
 
 seed_region: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) t_rex generate --config mvtbench.toml --maxzoom=6 --extent=$(region_bbox)
+	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=$(region_bbox)
 	@echo Statistics written to $(result_csv)
 
 seed_region_4: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) sh -c 't_rex generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=0 --extent=$(region_bbox) & \
-	t_rex generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=1 --extent=$(region_bbox) & \
-	t_rex generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=2 --extent=$(region_bbox) & \
-	t_rex generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=3 --extent=$(region_bbox)'
+	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) sh -c '$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=0 --extent=$(region_bbox) & \
+	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=1 --extent=$(region_bbox) & \
+	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=2 --extent=$(region_bbox) & \
+	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=3 --extent=$(region_bbox)'
 	@echo Statistics written to $(result_csv)
 
 $(result_csv):
