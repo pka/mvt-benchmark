@@ -1,0 +1,13 @@
+version: "3"
+services:
+  mvtbenchdb:
+    #build:
+    #  context: ./data
+    image: sourcepole/mvtbenchdb
+    #ports:
+    # - "127.0.0.1:5439:5432"
+
+  t-rex:
+    image: sourcepole/t-rex
+    volumes:
+      - ./t-rex:/var/data/in:ro

@@ -1,6 +1,5 @@
 sw = t-rex
-exec = t_rex
-#exec = docker run -v $$PWD:/var/data/in:ro -e TREX_DATASOURCE_URL=postgresql://$$USER@172.17.0.1/mvtbench sourcepole/t-rex
+exec = docker-compose run t-rex
 result_csv = results_seed.csv
 ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008
@@ -22,6 +21,9 @@ seed_region_4: $(result_csv)
 
 $(result_csv):
 	echo time_started,software,test_name,real,user,sys >$@
+
+serve:
+	docker-compose run -p 127.0.0.1:6767:6767 t-rex serve --config mvtbench.toml --openbrowser=false
 
 http:
 	# 1 connection

@@ -1,5 +1,5 @@
 request = function()
-    path = "/ne/7/69/47.pbf"
+    path = "/ne_countries/7/69/47.pbf"
     return wrk.format(nil, path)
 end
 

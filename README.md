@@ -9,8 +9,24 @@ Measurement targets:
 * How long does it take to generate all tiles (single node / multiple nodes)
 * How many requests/s does the tile server deliver in web server mode (with and without tile cache)
 
-DB Setup
---------
+
+Run benchmark
+-------------
+
+    docker-compose up -d mvtbenchdb
+
+    cd t-rex
+    make clean seed_region stats
+    make clean seed_region_4 stats
+
+Http test:
+
+    make serve &
+    make http
+
+
+Local DB Setup
+--------------
 
     # Set Postgresql environment variables when needed: PGHOST, PGPORT, PGUSER, PGPASSWORD
     cd data
@@ -19,16 +35,3 @@ DB Setup
 Import GeoPackage with ogr2ogr:
 
     make gpkgrestore
-
-
-Run benchmark
--------------
-
-    cd t-rex
-    make clean seed_region stats
-    make clean seed_region_4 stats
-
-Http test:
-
-    t_rex serve mvtbench.toml
-    make http

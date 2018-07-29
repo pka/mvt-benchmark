@@ -8,3 +8,5 @@ createdb:
 gpkgrestore:
 	ogr2ogr -f PostgreSQL PG:dbname=$(DBNAME) mvtbench.gpkg
 
+dockerbuild:
+	docker build -t sourcepole/mvtbenchdb .
