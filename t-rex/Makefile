@@ -1,5 +1,5 @@
 sw = t-rex
-exec = docker-compose run t-rex
+exec = docker-compose run --rm t-rex
 result_csv = results_seed.csv
 ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008

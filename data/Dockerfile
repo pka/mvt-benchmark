@@ -11,7 +11,6 @@ RUN apt-get update &&\
     postgresql-contrib-$PG_MAJOR=$PG_VERSION \
     postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
     postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
-    postgresql-$PG_MAJOR-pgrouting \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -22,7 +21,7 @@ RUN chmod g=u /etc/passwd \
 #RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 #ENV LANG en_US.utf8
 
-RUN apt-get update && apt-get install -y curl make gdal-bin
+RUN apt-get update && apt-get install -y make gdal-bin
 
 # setup database
 COPY mvtbench.gpkg /
