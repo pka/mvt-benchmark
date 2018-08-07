@@ -1,26 +1,32 @@
 sw = t-rex
 exec = docker-compose run --rm t-rex
-result_csv = results_seed.csv
+result_prefix = ../results/results_
 ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008
 
-seed_world: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=-180,-90,180,90
-	@echo Statistics written to $(result_csv)
+seed_world: $(result_prefix)seed_world.csv
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=-180,-90,180,90
+	@echo Statistics written to $<
 
-seed_region: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=$(region_bbox)
-	@echo Statistics written to $(result_csv)
+seed_region: $(result_prefix)seed_region.csv
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) generate --config mvtbench.toml --maxzoom=6 --extent=$(region_bbox)
+	@echo Statistics written to result_$@.csv
 
-seed_region_4: $(result_csv)
-	time -f "$(ts),$(sw),$@,%E,%U,%S" -a -o $(result_csv) sh -c '$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=0 --extent=$(region_bbox) & \
+seed_region_4: $(result_prefix)seed_region_4.csv
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< sh -c '$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=0 --extent=$(region_bbox) & \
 	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=1 --extent=$(region_bbox) & \
 	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=2 --extent=$(region_bbox) & \
 	$(exec) generate --config mvtbench.toml --maxzoom=6 --progress=false --nodes=4 --nodeno=3 --extent=$(region_bbox)'
-	@echo Statistics written to $(result_csv)
+	@echo Statistics written to $<
 
-$(result_csv):
-	echo time_started,software,test_name,real,user,sys >$@
+$(result_prefix)seed_world.csv:
+	echo time_started,software,real,user,sys >$@
+
+$(result_prefix)seed_region.csv:
+	echo time_started,software,real,user,sys >$@
+
+$(result_prefix)seed_region_4.csv:
+	echo time_started,software,real,user,sys >$@
 
 serve:
 	docker-compose run -p 127.0.0.1:6767:6767 t-rex serve --config mvtbench.toml --openbrowser=false
