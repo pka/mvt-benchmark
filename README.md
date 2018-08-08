@@ -13,16 +13,22 @@ Measurement targets:
 Run benchmark
 -------------
 
-    docker-compose up -d mvtbenchdb
+Requirements:
+* Make
+* Docker & docker-compose
+* gnuplot
 
-    cd t-rex
-    make clean seed_region stats
-    make clean seed_region_4 stats
+Quick benchmark:
 
-Http test:
+    make quick_bench
 
-    make serve &
-    make http
+Full benchmark:
+
+    make bench
+
+Graph:
+
+    x-www-browser results/benchmark.jpg
 
 
 Local DB Setup

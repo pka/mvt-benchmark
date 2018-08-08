@@ -77,7 +77,7 @@ simplify = true
 sql = """SELECT wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
 
 [cache.file]
-base = "/tmp/mvtcache"
+base = "../tiles"
 baseurl = "http://example.com/tiles"
 
 [webserver]
@@ -87,4 +87,4 @@ port = 6767
 
 [[webserver.static]]
 path = "/map"
-dir = "./maps/"
+dir = "../maps/"

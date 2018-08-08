@@ -4,10 +4,14 @@ services:
     #build:
     #  context: ./data
     image: sourcepole/mvtbenchdb
-    #ports:
-    # - "127.0.0.1:5439:5432"
+    ports:
+      - "127.0.0.1:5439:5432"
 
   t-rex:
     image: sourcepole/t-rex
+    ports:
+      - "127.0.0.1:6767:6767"
     volumes:
       - ./t-rex:/var/data/in:ro
+      - ./tiles:/var/data/tiles
+      - ./maps:/var/data/maps:ro

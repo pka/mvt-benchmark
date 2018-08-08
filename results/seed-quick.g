@@ -1,5 +1,5 @@
 set terminal jpeg
-set output "benchmark.jpg"
+set output "benchmark-quick.jpg"
 
 set multiplot layout 2,1
 
@@ -21,12 +21,12 @@ set ylabel "duration (s)"
 set datafile separator ','
 
 # graph title
-set title "seed"
+set title "seed region"
 unset key
-plot "results_seed.csv" using (1):3:(0):2 with boxplot
+plot "results_seed_region.csv" using (1):3:(0):2 with boxplot
 
-set title "seed 4 nodes"
+set title "seed region 4 nodes"
 unset key
-plot "results_seed_4.csv" using (1):3:(0):2 with boxplot
+plot "results_seed_region_4.csv" using (1):3:(0):2 with boxplot
 
 unset multiplot
