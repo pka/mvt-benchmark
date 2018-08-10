@@ -10,7 +10,7 @@ set grid y
 set ylabel "Requests/s"
 set logscale x
 set xlabel "Connections"
-set xtics (1,4,32,64)
+set xtics (1,4,32,64,128,256)
 
 # Use CSV delimiter instead of spaces (default)
 set datafile separator ','

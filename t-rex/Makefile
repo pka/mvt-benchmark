@@ -35,7 +35,7 @@ mvtserver_teardown:
 	docker stop t_rex_serve || true
 	docker rm t_rex_serve || true
 
-wkr_cmd = docker run --rm --net=host -e SW="$(sw)" -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
+wkr_cmd = docker run --rm  --user=$$UID --net=host -e SW="$(sw)" -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
 
 bench_http:
 	@# From first entry only title is displayed on plot
@@ -44,8 +44,10 @@ bench_http:
 	$(wkr_cmd:[CONN]=4) --latency -d 5 -c 4 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
 	$(wkr_cmd:[CONN]=32) --latency -d 5 -c 32 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
 	$(wkr_cmd:[CONN]=64) --latency -d 5 -c 64 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	@#echo >>../bench/results/results_http.csv
-	@#echo >>../bench/results/results_http.csv
+	$(wkr_cmd:[CONN]=128) --latency -d 5 -c 128 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=256) --latency -d 5 -c 256 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	@echo >>../bench/results/results_http.csv
+	@echo >>../bench/results/results_http.csv
 	@echo Statistics written to results_http.csv
 
 # Quick benchmarks
