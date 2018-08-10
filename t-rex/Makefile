@@ -1,6 +1,6 @@
 sw = t-rex
 exec = docker-compose run --rm t-rex
-result_prefix = ../results/results_
+result_prefix = ../bench/results/results_
 ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008
 tilecache = ../tiles
@@ -26,19 +26,26 @@ bench_seed_4: $(result_prefix)seed_4.csv
 
 # Tile serving benchmarks
 
+mvtserver_exec = docker-compose run -p 127.0.0.1:6767:6767 --rm --name=t_rex_serve -d t-rex
+
 mvtserver_ready: data_ready
-	docker-compose run -p 127.0.0.1:6767:6767 -d t-rex serve --config mvtbench.toml --loglevel error --openbrowser false
+	$(mvtserver_exec) serve --config mvtbench.toml --loglevel error --openbrowser false
 
 mvtserver_teardown:
-	docker-compose stop t-rex
+	docker stop t_rex_serve || true
+	docker rm t_rex_serve || true
+
+wkr_cmd = docker run --rm --net=host -e SW="$(sw)" -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
 
 bench_http:
-	# 1 connection
-	docker run --rm --net=host -v $$PWD:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive' --latency -d 5 -c 4 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
-	# 4 connections
-	docker run --rm --net=host -v $$PWD:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive' --latency -d 5 -c 4 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	# 32 connections
-	docker run --rm --net=host -v $$PWD:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive' --latency -d 5 -c 32 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	@# From first entry only title is displayed on plot
+	$(wkr_cmd:[CONN]=1) --latency -d 1 -c 1 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=1) --latency -d 5 -c 1 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=4) --latency -d 5 -c 4 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=32) --latency -d 5 -c 32 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=64) --latency -d 5 -c 64 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	@#echo >>../bench/results/results_http.csv
+	@#echo >>../bench/results/results_http.csv
 	@echo Statistics written to results_http.csv
 
 # Quick benchmarks

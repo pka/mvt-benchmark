@@ -6,7 +6,7 @@ end
 
 done = function(summary, latency, requests)
   -- open output file
-  local fn = "/bench/results_http.csv"
+  local fn = "/bench/results/results_http.csv"
   local f = io.open(fn,"r")
   local newcsv = (f==nil)
   if f~=nil then
@@ -15,17 +15,19 @@ done = function(summary, latency, requests)
 
   f = io.open(fn, "a+")
   if newcsv then
-    f:write("time_started,min_requests,max_requests,mean_requests,min_latency,max_latency,mean_latency,stdev,50th,90th,99th,99.999th,duration,requests,bytes,connect_errors,read_errors,write_errors,status_errors,timeouts\n")
+    f:write("#time_started,software,connections,min_requests,max_requests,mean_requests,min_latency,max_latency,mean_latency,stdev,50th,90th,99th,99.999th,duration,requests,bytes,request_per_sec,connect_errors,read_errors,write_errors,status_errors,timeouts\n")
   end
-  f:write(string.format("%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%d,%d,%d,%d\n",
+  f:write(string.format("%s,%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%d,%d,%d,%d,%d\n",
     os.date("!%Y-%m-%dT%TZ"),
-    requests.min,   -- minimum latency
-    requests.max,   -- max latency
-    requests.mean,  -- mean of latency
-    latency.min,    -- minimum latency
-    latency.max,    -- max latency
-    latency.mean,   -- mean of latency
-    latency.stdev,  -- standard deviation of latency
+    os.getenv("SW"),
+    os.getenv("CONNECTIONS"),
+    requests.min,   -- per-thread request rate
+    requests.max,
+    requests.mean,
+    latency.min,    -- per-request latency
+    latency.max,
+    latency.mean,
+    latency.stdev,
 
     latency:percentile(50),     -- 50percentile latency
     latency:percentile(90),     -- 90percentile latency
@@ -35,6 +37,8 @@ done = function(summary, latency, requests)
     summary["duration"],          -- duration of the benchmark
     summary["requests"],          -- total requests during the benchmark
     summary["bytes"],             -- total received bytes during the benchmark
+
+    summary["requests"]/(summary["duration"]/1000000), -- Total requests/sec
 
     summary["errors"]["connect"], -- total socket connection errors
     summary["errors"]["read"],    -- total socket read errors
