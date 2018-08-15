@@ -53,7 +53,7 @@ if #paths <= 0 then
   os.exit()
 end
 
-print("multiplepaths: Found " .. #paths .. " paths")
+--print("multiplepaths: Found " .. #paths .. " paths")
 
 -- Initialize the paths array iterator
 counter = 0
@@ -77,7 +77,7 @@ end
 
 done = function(summary, latency, requests)
   -- open output file
-  local fn = "/bench/results/results_http.csv"
+  local fn = "/bench/results/results_" .. os.getenv("CSV_NAME")
   local f = io.open(fn,"r")
   local newcsv = (f==nil)
   if f~=nil then

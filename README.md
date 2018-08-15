@@ -7,7 +7,7 @@ The benchmark uses a minimal subset of the [NaturalEarth](http://www.naturaleart
 
 Measurement targets:
 * How long does it take to generate all tiles (single node / multiple nodes)
-* How many requests/s does the tile server deliver in web server mode (with and without tile cache)
+* How many requests/s does the tile server deliver in web server mode
 
 
 Run benchmark

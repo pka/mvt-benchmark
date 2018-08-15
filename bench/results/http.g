@@ -1,5 +1,5 @@
 set terminal jpeg
-set output "http-quick.jpg"
+set output "http.jpg"
 
 # Where to place the legend/key
 set key left top
@@ -15,5 +15,5 @@ set datafile separator ','
 
 # graph title
 set title "Tile serving"
-plot for [i=0:*] "results_http_quick.csv" index i using 3:18 \
+plot for [i=0:*] "results_http.csv" index i using 3:18 \
   with linespoints title columnheader(2)

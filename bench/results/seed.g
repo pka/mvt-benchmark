@@ -1,5 +1,5 @@
 set terminal jpeg
-set output "benchmark.jpg"
+set output "seed.jpg"
 
 set multiplot layout 2,1
 

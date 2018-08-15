@@ -1,5 +1,5 @@
 set terminal jpeg
-set output "benchmark-quick.jpg"
+set output "seed-quick.jpg"
 
 set multiplot layout 2,1
 

@@ -5,6 +5,59 @@ ts = $(shell date '+%Y-%m-%dT%TZ')
 region_bbox = 5.361328,45.336702,30.058594,58.950008
 tilecache = ../tiles
 
+quick_bench:
+	# Seeding benchmarks
+	make data_ready clean_tilecache
+	make bench_seed_region tile_stats clean_tilecache
+	make bench_seed_region_4 tile_stats
+	# Tile serving benchmarks (with seeded tilecache)
+	make mvtserver_teardown
+	make mvtserver_ready bench_http duration=5 csv=http_quick.csv mvtserver_teardown
+	make data_teardown
+
+bench:
+	# Seeding benchmarks
+	make data_ready clean_tilecache
+	make bench_seed tile_stats clean_tilecache
+	make bench_seed_4 tile_stats
+	# Tile serving benchmarks (with seeded tilecache)
+	make mvtserver_teardown
+	make mvtserver_ready bench_http mvtserver_teardown
+	make data_teardown
+
+# Optional benchmarks
+
+t_rex_0_8_2_quick: /tmp/t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb
+	# Seeding benchmarks
+	make data_ready clean_tilecache
+	TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench make bench_seed_region exec=/usr/bin/t_rex sw="t-rex 0.8.2" tile_stats
+	rm -rf $(tilecache)/ne_countries
+	TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench make bench_seed_region_4 exec=/usr/bin/t_rex sw="t-rex 0.8.2" tile_stats
+	# Tile serving benchmarks (with seeded tilecache)
+	make data_ready
+	RUST_LOG=error TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench /usr/bin/t_rex serve --config mvtbench.toml --openbrowser false &
+	make bench_http sw="t-rex 0.8.2" duration=5 csv=http_quick.csv
+	sleep 3
+	make data_teardown
+	rm -rf $(tilecache)/ne_countries
+
+t_rex_0_8_2: /tmp/t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb
+	# Seeding benchmarks
+	make data_ready clean_tilecache
+	TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench make bench_seed exec=/usr/bin/t_rex sw="t-rex 0.8.2" tile_stats
+	rm -rf $(tilecache)/ne_countries
+	TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench make bench_seed_4 exec=/usr/bin/t_rex sw="t-rex 0.8.2" tile_stats
+	# Tile serving benchmarks (with seeded tilecache)
+	make data_ready
+	RUST_LOG=error TREX_DATASOURCE_URL=postgresql://mvtbench:mvtbench@127.0.0.1:5439/mvtbench /usr/bin/t_rex serve --config mvtbench.toml --openbrowser false &
+	make bench_http sw="t-rex 0.8.2"
+	sleep 3
+	make data_teardown
+	rm -rf $(tilecache)/ne_countries
+
+/tmp/t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb:
+	cd /tmp && curl -O -L https://github.com/t-rex-tileserver/t-rex/releases/download/v0.8.2/t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb && sudo dpkg -i t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb
+
 # Seeding benchmarks
 
 data_ready:
@@ -35,20 +88,22 @@ mvtserver_teardown:
 	docker stop t_rex_serve || true
 	docker rm t_rex_serve || true
 
-wkr_cmd = docker run --rm  --user=$$UID --net=host -e SW="$(sw)" -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
+csv = http.csv
+wkr_cmd = docker run --rm  --user=$$UID --net=host -e SW="$(sw)" -e CSV_NAME=$(csv) -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
+duration = 20
 
 bench_http:
 	@# From first entry only title is displayed on plot
 	$(wkr_cmd:[CONN]=1) --latency -d 1 -c 1 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=1) --latency -d 5 -c 1 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=4) --latency -d 5 -c 4 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=32) --latency -d 5 -c 32 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=64) --latency -d 5 -c 64 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=128) --latency -d 5 -c 128 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	$(wkr_cmd:[CONN]=256) --latency -d 5 -c 256 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
-	@echo >>../bench/results/results_http.csv
-	@echo >>../bench/results/results_http.csv
-	@echo Statistics written to results_http.csv
+	$(wkr_cmd:[CONN]=1) --latency -d $(duration) -c 1 --timeout 8 -t 1 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=4) --latency -d $(duration) -c 4 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=32) --latency -d $(duration) -c 32 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=64) --latency -d $(duration) -c 64 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=128) --latency -d $(duration) -c 128 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	$(wkr_cmd:[CONN]=256) --latency -d $(duration) -c 256 --timeout 8 -t 4 -s /bench/httpbench.lua http://127.0.0.1:6767
+	@echo >>$(result_prefix)${csv}
+	@echo >>$(result_prefix)${csv}
+	@echo Statistics written to $(result_prefix)${csv}
 
 # Quick benchmarks
 
