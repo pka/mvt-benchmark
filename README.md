@@ -10,8 +10,8 @@ Measurement targets:
 * How many requests/s does the tile server deliver in web server mode
 
 
-Tileset defition
-----------------
+Tileset definition
+------------------
 
 * Tileset name: `ne_countries`
 * Maxzoom level for tile data: 6
@@ -27,8 +27,6 @@ Layer definition:
 | geo-lines (z=5..6) | MULTILINESTRING |   0    |   no     | ne_10m_geographic_lines               | name               | -               |
 | land-border        | MULTILINESTRING |   0    |   yes    | ne_10m_admin_0_boundary_lines_land    | -                  | min_zoom <= {z} |
 | state              | MULTILINESTRING |   0    |   yes    | ne_10m_admin_1_states_provinces_lines | adm0_a3            | min_zoom <= {z} |
-
-The database can be started within a Docker container with `docker-compose up -d mvtbenchdb`.
 
 
 Display style
@@ -60,6 +58,34 @@ Full benchmark:
 Graph:
 
     x-www-browser results/benchmark.jpg
+
+
+Add a new software
+------------------
+
+* Copy the skeletion directory to a new directory named after your software
+* Add a configuration for your software to create a tileset following the definition above
+* Adapt the Makefile or add a script to run the benchmarks with your software, using docker containters, if possible
+* Add calls to the project Makefile from the top level Makefile
+* Open a pull request on Github
+
+
+Reference database
+------------------
+
+The database can be started within a Docker container with
+
+    docker-compose up -d mvtbenchdb
+
+PostgreSQL is running on Port 5432 within Docker and is mapped to `127.0.0.1:5439` on the Docker host.
+
+* DB user: `mvtbench`
+* DB password: `mvtbench`
+
+
+Connection example:
+
+    PGPASSWORD=mvtbench psql -h 127.0.0.1 -p 5439 -U mvtbench
 
 
 Local DB Setup
