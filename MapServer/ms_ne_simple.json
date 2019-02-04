@@ -1,0 +1,98 @@
+{
+  "version": 8,
+  "name": "natural-earth-countries",
+  "metadata": {
+    "mapbox:autocomposite": false,
+    "mapbox:type": "template",
+    "maputnik:renderer": "mbgljs"
+  },
+  "center": [
+    8,
+    38
+  ],
+  "zoom": 4,
+  "bearing": 0,
+  "pitch": 0,
+"sources": {                                                                                                                                                          
+      "compass": {                                                                                                                                                            
+      "type": "vector",                                                                                                                                                     
+      "tiles": ["http://localhost/cgi-bin/mapserv?map=/usr/local/share/mapserver/demos/mvt-demo-master/ne.map&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt"]
+    }                                                                                                                                                                       
+  },                                                                                                                                                                                                                                                                        
+  "glyphs": "https://go-spatial.github.io/carto-assets/fonts/{fontstack}/{range}.pbf",
+  "layers": [                                                                                                                                                               
+{
+    "id": "country-glow-outer",
+    "type": "line",
+    "source": "compass",
+    "source-layer": "allcountries",
+    "layout": {
+      "line-join":"round"
+    },
+    "paint": {
+      "line-color": "#226688",
+      "line-width": 5,
+      "line-opacity": {
+        "stops": [[0,0],[1,0.1]]
+      }
+    }
+  },{
+    "id": "country-glow-inner",
+    "type": "line",
+    "source": "compass",
+    "source-layer": "allcountries",
+    "layout": {
+      "line-join":"round"
+    },
+    "paint": {
+      "line-color": "#226688",
+      "line-width": {
+        "stops": [[0,1.2],[1,1.6],[2,2],[3,2.4]]
+      },
+      "line-opacity": 0.8
+    }
+  },{
+    "id": "country-fill",
+    "type": "fill",
+    "source": "compass",
+    "source-layer": "allcountries",
+    "paint": {
+      "fill-color": {
+        "property": "mapcolor7",
+        "stops": [
+            [1, "#fdaf6b"],
+            [2, "#fdc663"],
+            [3, "#fae364"],
+            [4, "#d3e46f"],
+            [5, "#aadb78"],
+            [6, "#a3cec5"],
+            [7, "#ceb5cf"]
+        ]
+      }
+    }
+},{
+    "id": "country-italy",
+    "type": "fill",
+    "source": "compass",
+    "source-layer": "italy",
+    "paint": {
+      "fill-color": "#fdc663"
+      }
+  },{
+    "id": "country-fill-special",
+    "type": "fill",
+    "source": "compass",
+    "source-layer": "country",
+    "filter":["in","adm0_a3","AUT"],
+    "paint": {
+      "fill-color": {
+        "property": "adm0_a3",
+        "type": "categorical",
+        "stops": [
+            ["AUT", "#F0F8FF"]
+        ]
+      }
+    }
+}                                                                                                                      
+  ]                                                                                                                                                                         
+}   
