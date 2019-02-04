@@ -1,0 +1,243 @@
+MAP
+  NAME 'vector_tile_test'
+  SIZE 500 500
+  MAXSIZE 4096
+
+  PROJECTION
+    "+init=epsg:3857"
+  END
+
+  OUTPUTFORMAT
+    NAME "png8"
+    DRIVER AGG/PNG8
+    MIMETYPE "image/png; mode=8bit"
+    IMAGEMODE RGB
+    EXTENSION "png"
+    FORMATOPTION "QUANTIZE_FORCE=on"
+    FORMATOPTION "QUANTIZE_COLORS=256"
+    FORMATOPTION "GAMMA=0.75"
+    TRANSPARENT ON
+  END
+
+  OUTPUTFORMAT
+    NAME "mvt"
+    DRIVER MVT
+    #FORMATOPTION "EXTENT=512" # default is 4096
+    FORMATOPTION "EDGE_BUFFER=20"
+  END
+
+  WEB
+    METADATA
+      wms_enable_request "*"
+      MVT_SIZE '512'
+      WMS_TITLE 'Test mapfile for MVT development.'
+      WMS_ONLINERESOURCE 'http://localhost/cgi-bin/mapserv?'
+      WMS_SRS 'epsg:3857 epsg:900913'
+    END
+  END
+
+ LAYER
+  NAME "allcountries"
+  TYPE POLYGON
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT * FROM ne_10m_admin_0_countries) as temp using unique ogc_fid using SRID=3857"    
+  # ogc_fid, wkb_geometry, adm0_a3, mapcolor7
+  DUMP true   
+  METADATA
+    "wms_title" "allcountries"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      OUTLINECOLOR 200 50 100
+      WIDTH 0.4
+    END
+   END
+  END
+
+
+# [[tileset.layer]]
+# name = "country-name"
+# geometry_field = "wkb_geometry"
+# geometry_type = "POINT"
+# srid = 3857
+# buffer_size = 0
+# [[tileset.layer.query]]
+# sql = """SELECT wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points WHERE wkb_geometry && !bbox!"""
+
+ LAYER
+  NAME "country-name"
+  TYPE POINT
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points) as temp using unique ogc_fid using SRID=3857"    
+  DUMP true   
+  METADATA
+    "wms_title" "country-name"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      COLOR 200 50 100
+      SIZE  1
+    END
+   END
+  END
+   
+
+ LAYER
+  NAME "italy"
+  TYPE POLYGON
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, adm0_a3, mapcolor7 FROM ne_10m_admin_0_countries where adm0_a3 ilike 'ITA') as temp using unique ogc_fid using SRID=3857"    
+  DUMP true   
+  METADATA
+    "wms_title" "mexiko"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      OUTLINECOLOR 200 50 100
+      WIDTH 0.4
+    END
+   END
+  END
+
+
+# [[tileset.layer]]
+# name = "geo-lines"
+# geometry_field = "wkb_geometry"
+# geometry_type = "MULTILINESTRING"
+# srid = 3857
+# buffer_size = 0
+# simplify = false
+# [[tileset.layer.query]]
+# # ne_50m_geographic_lines
+# minzoom = 1
+# maxzoom = 4
+# sql = """SELECT wkb_geometry, name FROM ne_50m_geographic_lines WHERE wkb_geometry && !bbox!"""
+# [[tileset.layer.query]]
+# # ne_10m_geographic_lines
+# minzoom = 5
+# sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines WHERE wkb_geometry && !bbox!"""
+
+# LAYER
+#   NAME "geo-lines"
+#   TYPE LINE
+#   STATUS OFF
+#   CONNECTIONTYPE postgis
+#   PROCESSING "CLOSE_CONNECTION=DEFER"
+#   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+#   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, name FROM ne_50m_geographic_lines) as temp using unique ogc_fid using SRID=3857"    
+#   DUMP true   
+#   METADATA
+#     "wms_title" "geo-lines"
+#     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+#     "wms_feature_info_mime_type" "text/html"  
+#   END
+#   PROJECTION
+#     "init=epsg:3857"
+#   END   
+#    CLASS
+#     STYLE
+#       COLOR 200 50 100
+#       SIZE  1
+#     END
+#    END
+#   END
+
+
+#   [[tileset.layer]]
+#   name = "land-border-country"
+#   geometry_field = "wkb_geometry"
+#   geometry_type = "MULTILINESTRING"
+#   fid_field = "ogc_fid"
+#   srid = 3857
+#   buffer_size = 0
+#   simplify = true
+#   [[tileset.layer.query]]
+#   # ne_10m_admin_0_boundary_lines_land
+#   sql = """SELECT wkb_geometry FROM ne_10m_admin_0_boundary_lines_land WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
+
+ LAYER
+  NAME "land-border-country"
+  TYPE LINE
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry FROM ne_10m_admin_0_boundary_lines_land) as temp using unique ogc_fid using SRID=3857"    
+  DUMP true   
+  METADATA
+    "wms_title" "land-border-country"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      COLOR 200 50 100
+      WIDTH  1
+    END
+   END
+  END
+
+#  [[tileset.layer]]
+#  name = "state"
+#  geometry_field = "wkb_geometry"
+#  geometry_type = "MULTILINESTRING"
+#  srid = 3857
+#  buffer_size = 0
+#  simplify = true
+#  [[tileset.layer.query]]
+#  sql = """SELECT wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
+
+ LAYER
+  NAME "state"
+  TYPE LINE
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines) as temp using unique ogc_fid using SRID=3857"    
+  DUMP true   
+  METADATA
+    "wms_title" "state"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      COLOR 200 50 100
+      WIDTH  1
+    END
+   END
+  END
+
+
+END # Map end
