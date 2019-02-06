@@ -3,6 +3,8 @@ MAP
   SIZE 500 500
   MAXSIZE 4096
 
+
+
   PROJECTION
     "+init=epsg:3857"
   END
@@ -50,6 +52,7 @@ MAP
     "wms_title" "allcountries"
     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"  
+    "gml_include_items" "mapcolor7"
   END
   PROJECTION
     "init=epsg:3857"
@@ -61,16 +64,6 @@ MAP
     END
    END
   END
-
-
-# [[tileset.layer]]
-# name = "country-name"
-# geometry_field = "wkb_geometry"
-# geometry_type = "POINT"
-# srid = 3857
-# buffer_size = 0
-# [[tileset.layer.query]]
-# sql = """SELECT wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points WHERE wkb_geometry && !bbox!"""
 
  LAYER
   NAME "country-name"
@@ -84,7 +77,8 @@ MAP
   METADATA
     "wms_title" "country-name"
     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
-    "wms_feature_info_mime_type" "text/html"  
+    "wms_feature_info_mime_type" "text/html" 
+    "gml_include_items" "abbrev, name" 
   END
   PROJECTION
     "init=epsg:3857"
@@ -108,7 +102,7 @@ MAP
   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, adm0_a3, mapcolor7 FROM ne_10m_admin_0_countries where adm0_a3 ilike 'ITA') as temp using unique ogc_fid using SRID=3857"    
   DUMP true   
   METADATA
-    "wms_title" "mexiko"
+    "wms_title" "italy"
     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"  
   END
@@ -131,40 +125,42 @@ MAP
 # srid = 3857
 # buffer_size = 0
 # simplify = false
-# [[tileset.layer.query]]
-# # ne_50m_geographic_lines
-# minzoom = 1
-# maxzoom = 4
-# sql = """SELECT wkb_geometry, name FROM ne_50m_geographic_lines WHERE wkb_geometry && !bbox!"""
-# [[tileset.layer.query]]
-# # ne_10m_geographic_lines
-# minzoom = 5
-# sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines WHERE wkb_geometry && !bbox!"""
 
-# LAYER
-#   NAME "geo-lines"
-#   TYPE LINE
-#   STATUS OFF
-#   CONNECTIONTYPE postgis
-#   PROCESSING "CLOSE_CONNECTION=DEFER"
-#   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
-#   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, name FROM ne_50m_geographic_lines) as temp using unique ogc_fid using SRID=3857"    
-#   DUMP true   
-#   METADATA
-#     "wms_title" "geo-lines"
-#     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
-#     "wms_feature_info_mime_type" "text/html"  
-#   END
-#   PROJECTION
-#     "init=epsg:3857"
-#   END   
-#    CLASS
-#     STYLE
-#       COLOR 200 50 100
-#       SIZE  1
-#     END
-#    END
-#   END
+####    [[tileset.layer.query]]
+####    # ne_50m_geographic_lines
+####    minzoom = 1
+####    maxzoom = 4
+####    sql = """SELECT wkb_geometry, name FROM ne_50m_geographic_lines WHERE wkb_geometry && !bbox!"""
+####    [[tileset.layer.query]]
+####    # ne_10m_geographic_lines
+####    minzoom = 5
+####    sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines WHERE wkb_geometry && !bbox!"""
+
+LAYER
+  NAME "geo-lines"
+  TYPE LINE
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=localhost port=5439"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, name FROM ne_50m_geographic_lines) as temp using unique ogc_fid using SRID=3857"    
+  DUMP true   
+  METADATA
+    "wms_title" "geo-lines"
+    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"
+    "gml_include_items" "name"  
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      COLOR 200 50 100
+      SIZE  1
+    END
+   END
+END
 
 
 #   [[tileset.layer]]
@@ -175,9 +171,10 @@ MAP
 #   srid = 3857
 #   buffer_size = 0
 #   simplify = true
-#   [[tileset.layer.query]]
-#   # ne_10m_admin_0_boundary_lines_land
-#   sql = """SELECT wkb_geometry FROM ne_10m_admin_0_boundary_lines_land WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
+
+####     [[tileset.layer.query]]
+####     # ne_10m_admin_0_boundary_lines_land
+####     sql = """SELECT wkb_geometry FROM ne_10m_admin_0_boundary_lines_land WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
 
  LAYER
   NAME "land-border-country"
@@ -191,7 +188,8 @@ MAP
   METADATA
     "wms_title" "land-border-country"
     "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
-    "wms_feature_info_mime_type" "text/html"  
+    "wms_feature_info_mime_type" "text/html"
+    # "gml_include_items" "ogc_fid"    
   END
   PROJECTION
     "init=epsg:3857"
@@ -211,8 +209,9 @@ MAP
 #  srid = 3857
 #  buffer_size = 0
 #  simplify = true
-#  [[tileset.layer.query]]
-#  sql = """SELECT wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
+
+####    [[tileset.layer.query]]
+####    sql = """SELECT wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines WHERE min_zoom::integer <= !zoom! AND wkb_geometry && !bbox!"""
 
  LAYER
   NAME "state"
