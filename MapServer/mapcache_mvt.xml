@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- see the accompanying mapcache.xml.sample for a fully commented configuration file -->
+<mapcache> 
+   <metadata>
+      <title>MVT Mapcache Service</title>
+      <abstract>MVT Benchmark Test MapServer</abstract>
+   </metadata>	
+   <cache name="disk" type="disk">
+      <base>/home/user/mvt-benchmark-master/mapserver_tiles</base>
+      <!--<symlink_blank/>-->
+   </cache>
+
+<format name="MVT" type="RAW">
+  <extension>mvt</extension>
+  <mime_type>application/vnd.mapbox-vector-tile</mime_type>
+</format>
+
+
+   <source name="ne_mvt" type="wms">
+      <getmap>
+         <params>
+            <FORMAT>application/vnd.mapbox-vector-tile</FORMAT>
+            <LAYERS>countries,country-name,geo-lines,land-border-country,state</LAYERS>
+            <MAP>/home/user/mvt-benchmark-master/mapserver/ne.map</MAP>          
+         </params>
+      </getmap>   
+      <http>
+         <url>http://localhost/cgi-bin/mapserv</url>
+      </http>
+   </source>
+
+<tileset name="ms_mvt">
+    <source>ne_mvt</source>
+    <grid>g</grid>
+    <cache>disk</cache>
+    <format>MVT</format>
+</tileset>
+
+
+     <default_format>MVT</default_format>
+
+   <service type="wms" enabled="true">
+      <full_wms>assemble</full_wms>
+      <resample_mode>bilinear</resample_mode>
+      <format>PNG</format>
+      <maxsize>4096</maxsize>
+   </service>
+   <errors>report</errors>
+   <lock_dir>/home/user/mvt-benchmark-master/mapserver_tiles</lock_dir>
+</mapcache>
