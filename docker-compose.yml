@@ -15,3 +15,19 @@ services:
       - ./t-rex:/var/data/in:ro
       - ./tiles:/var/data/tiles
       - ./maps:/var/data/maps:ro
+
+  mapserver:
+    image: camptocamp/mapserver:latest
+    user: www-data
+    ports:
+      - "127.0.0.1:6767:8080"
+    volumes:
+      - ./MapServer/ne.map:/etc/mapserver/mapserver.map:ro
+      - ./MapServer/epsg:/usr/share/proj/epsg:ro
+
+  mapcache:
+    image: camptocamp/mapcache:latest
+    user: www-data
+    volumes:
+      - ./MapServer/mapcache_mvt.xml:/etc/mapcache/config.xml:ro
+      - ./tiles:/var/sig/tiles
