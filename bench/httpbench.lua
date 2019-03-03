@@ -45,7 +45,7 @@ function load_url_paths_from_file(file)
 end
 
 -- Load URL paths from file
-paths = load_url_paths_from_file("/bench/paths.txt")
+paths = load_url_paths_from_file("/paths.txt")
 
 -- Check if at least one path was found in the file
 if #paths <= 0 then

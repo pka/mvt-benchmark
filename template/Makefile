@@ -57,7 +57,7 @@ mvtserver_teardown:
 	docker stop [...]
 
 csv = http.csv
-wkr_cmd = docker run --rm  --user=$$UID --net=host -e SW="$(sw)" -e CSV_NAME=$(csv) -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
+wkr_cmd = docker run --rm --user=$$UID --net=host -e SW="$(sw)" -e CSV_NAME=$(csv) -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -v $$PWD/../bench/paths.txt:/paths.txt:ro -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
 duration = 20
 
 bench_http:

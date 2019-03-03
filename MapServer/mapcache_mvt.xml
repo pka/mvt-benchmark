@@ -1,50 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- see the accompanying mapcache.xml.sample for a fully commented configuration file -->
-<mapcache> 
-   <metadata>
-      <title>MVT Mapcache Service</title>
-      <abstract>MVT Benchmark Test MapServer</abstract>
-   </metadata>	
-   <cache name="disk" type="disk">
-      <base>/var/sig/tiles</base>
-      <!--<symlink_blank/>-->
-   </cache>
+<?xml version="1.0" encoding="utf-8"?>
+<mapcache>
+  <metadata>
+    <title>MVT Mapcache Service</title>
+    <abstract>MVT Benchmark Test MapServer</abstract>
+  </metadata>
 
-<format name="MVT" type="RAW">
-  <extension>mvt</extension>
-  <mime_type>application/vnd.mapbox-vector-tile</mime_type>
-</format>
+  <cache name="disk" type="disk">
+    <base>/var/sig/tiles</base>
+    <!--<symlink_blank/>-->
+  </cache>
 
+  <format name="MVT" type="RAW">
+    <extension>mvt</extension>
+    <mime_type>application/vnd.mapbox-vector-tile</mime_type>
+  </format>
 
-   <source name="ne_mvt" type="wms">
-      <getmap>
-         <params>
-            <FORMAT>application/vnd.mapbox-vector-tile</FORMAT>
-            <LAYERS>allcountries,country-name,geo-lines,land-border-country,state</LAYERS>
-            <MAP>/etc/mapserver/mapserver.map</MAP>
-         </params>
-      </getmap>   
-      <http>
-         <url>http://mapserver:8080/</url>
-      </http>
-   </source>
+  <source name="ne_mvt" type="wms">
+    <getmap>
+      <params>
+        <FORMAT>application/vnd.mapbox-vector-tile</FORMAT>
+        <LAYERS>allcountries,country-name,geo-lines,land-border-country,state</LAYERS>
+        <MAP>/etc/mapserver/mapserver.map</MAP>
+      </params>
+    </getmap>
+    <http>
+      <url>http://mapserver:8080/</url>
+    </http>
+  </source>
 
-<tileset name="ms_mvt">
+  <tileset name="ms_mvt">
     <source>ne_mvt</source>
     <grid>g</grid>
     <cache>disk</cache>
     <format>MVT</format>
-</tileset>
+  </tileset>
 
+  <default_format>MVT</default_format>
 
-     <default_format>MVT</default_format>
+  <service type="gmaps" enabled="true"/>
+  <!-- URL example: http://127.0.0.1:6767/mapcache/gmaps/ms_mvt@g/1/0/1.mvt -->
 
-   <service type="wms" enabled="true">
-      <full_wms>assemble</full_wms>
-      <resample_mode>bilinear</resample_mode>
-      <format>PNG</format>
-      <maxsize>4096</maxsize>
-   </service>
-   <errors>report</errors>
-   <lock_dir>/var/sig/tiles</lock_dir>
+  <service type="wms" enabled="true">
+    <full_wms>assemble</full_wms>
+    <resample_mode>bilinear</resample_mode>
+    <format>PNG</format>
+    <maxsize>4096</maxsize>
+  </service>
+
+  <errors>report</errors>
+  <lock_dir>/var/sig/tiles</lock_dir>
 </mapcache>

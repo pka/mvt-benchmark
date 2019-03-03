@@ -8,7 +8,7 @@ tilecache = ../tiles
 quick_bench:
 	# Seeding benchmarks
 	make data_ready clean_tilecache
-	make mvtserver_ready
+	make mapserver_ready
 	make bench_seed_region tile_stats clean_tilecache
 	make bench_seed_region_4 tile_stats
 	# Tile serving benchmarks (with seeded tilecache)
@@ -19,7 +19,7 @@ quick_bench:
 bench:
 	# Seeding benchmarks
 	make data_ready clean_tilecache
-	make mvtserver_ready
+	make mapserver_ready
 	make bench_seed tile_stats clean_tilecache
 	make bench_seed_4 tile_stats
 	# Tile serving benchmarks (with seeded tilecache)
@@ -35,23 +35,30 @@ data_ready:
 data_teardown:
 	docker-compose stop mvtbenchdb
 
+mapserver_ready: data_ready
+	docker-compose up -d mapserver
+
+mapserver_teardown:
+	docker-compose stop mapserver
+
 bench_seed: $(result_prefix)seed.csv
-	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/config.xml -t ms_mvt -z 1,6
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6
 	@echo Statistics written to $<
 
 bench_seed_4: $(result_prefix)seed_4.csv
-	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/config.xml -t ms_mvt -z 1,6 -n 4
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6 -n 4
 	@echo Statistics written to $<
 
 # Tile serving benchmarks
 
-mvtserver_ready: data_ready
-	docker-compose up -d mapserver
+mvtserver_ready: mapserver_ready
+	docker-compose up -d mapcache
 
 mvtserver_teardown:
+	docker-compose stop mapcache
 
 csv = http.csv
-wkr_cmd = docker run --rm  --user=$$UID --net=host -e SW="$(sw)" -e CSV_NAME=$(csv) -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
+wkr_cmd = docker run --rm --user=$$UID --net=host -e SW="$(sw)" -e CSV_NAME=$(csv) -e CONNECTIONS=[CONN] -v $$PWD/../bench:/bench -v $$PWD/paths.txt:/paths.txt:ro williamyeh/wrk -H 'Accept-Encoding: gzip' -H 'Connection: keep-alive'
 duration = 20
 
 bench_http:
@@ -70,11 +77,11 @@ bench_http:
 # Quick benchmarks
 
 bench_seed_region: $(result_prefix)seed_region.csv
-	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/config.xml -t ms_mvt -z 1,6 -e $(region_bbox)
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6 -e $(region_bbox)
 	@echo Statistics written to result_$@.csv
 
 bench_seed_region_4: $(result_prefix)seed_region_4.csv
-	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/config.xml -t ms_mvt -z 1,6 -n 4 -e $(region_bbox)
+	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6 -n 4 -e $(region_bbox)
 	@echo Statistics written to $<
 
 # Helpers
