@@ -15,7 +15,8 @@ Tileset definition
 
 * Tileset name: `ne_countries`
 * Maxzoom level for tile data: 6
-* SRS (data and tiles: EPSG:3857 (Web Mercator)
+* Tile size: 4096
+* SRS (data and tiles): EPSG:3857 (Web Mercator)
 
 Layer definition:
 
