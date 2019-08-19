@@ -11,7 +11,6 @@ quick_bench:
 	make mapserver_ready
 	make bench_seed_region tile_stats clean_tilecache
 	make bench_seed_region_4 tile_stats
-	make tilechecks
 	# Tile serving benchmarks (with seeded tilecache)
 	make mvtserver_teardown
 	make mvtserver_ready bench_http duration=5 csv=http_quick.csv mvtserver_teardown
@@ -23,7 +22,6 @@ bench:
 	make mapserver_ready
 	make bench_seed tile_stats clean_tilecache
 	make bench_seed_4 tile_stats
-	make tilechecks
 	# Tile serving benchmarks (with seeded tilecache)
 	make mvtserver_teardown
 	make mvtserver_ready bench_http mvtserver_teardown
@@ -50,9 +48,6 @@ bench_seed: $(result_prefix)seed.csv
 bench_seed_4: $(result_prefix)seed_4.csv
 	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6 -n 4
 	@echo Statistics written to $<
-
-tilechecks:
-	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/21.mvt
 
 # Tile serving benchmarks
 
@@ -106,6 +101,7 @@ $(result_prefix)seed_region_4.csv:
 tile_stats:
 	find $(tilecache)/ms_mvt -name '*mvt' | wc -l
 	du -s $(tilecache)/ms_mvt
+	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/21.mvt
 
 clean_tilecache:
 	@# Delete files as user www-data
