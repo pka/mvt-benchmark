@@ -2,7 +2,7 @@ sw = mapserver
 exec = docker-compose run --rm mapcache
 result_prefix = ../bench/results/results_
 ts = $(shell date '+%Y-%m-%dT%TZ')
-region_bbox = 325000,5599000,343000,5615000
+region_bbox = 596820,5674685,3346107,8169590
 tilecache = ../tiles
 
 quick_bench:
@@ -52,9 +52,7 @@ bench_seed_4: $(result_prefix)seed_4.csv
 	@echo Statistics written to $<
 
 tilechecks:
-	# Temporary test tile instead of missing 6/34/21.pbf. TMS schema?
-	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/42.mvt
-	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/21.pbf
+	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/21.mvt
 
 # Tile serving benchmarks
 

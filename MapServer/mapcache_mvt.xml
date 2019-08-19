@@ -7,7 +7,7 @@
 
   <cache name="disk"type="disk" layout="template">
     <base>/var/sig/tiles</base>
-    <template>/var/sig/tiles/{tileset}/{z}/{x}/{y}.{ext}</template>
+    <template>/var/sig/tiles/{tileset}/{z}/{x}/{inv_y}.{ext}</template>
   </cache>
 
   <format name="MVT" type="RAW">
