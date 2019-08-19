@@ -26,7 +26,7 @@ Layer definition:
 | country-name       | POINT           |   0    |   no     | ne_10m_admin_0_country_points         | abbrev, name       | -               |
 | geo-lines (z=1..4) | MULTILINESTRING |   0    |   no     | ne_50m_geographic_lines               | name               | -               |
 | geo-lines (z=5..6) | MULTILINESTRING |   0    |   no     | ne_10m_geographic_lines               | name               | -               |
-| land-border        | MULTILINESTRING |   0    |   yes    | ne_10m_admin_0_boundary_lines_land    | -                  | min_zoom <= {z} |
+| land-border-country| MULTILINESTRING |   0    |   yes    | ne_10m_admin_0_boundary_lines_land    | -                  | min_zoom <= {z} |
 | state              | MULTILINESTRING |   0    |   yes    | ne_10m_admin_1_states_provinces_lines | adm0_a3            | min_zoom <= {z} |
 
 
