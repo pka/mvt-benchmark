@@ -19,7 +19,7 @@ quick_bench:
 	cd t-rex && make quick_bench
 	cd MapServer && make quick_bench
 
-	cd bench/results && make
+	cd bench/results && make quick
 
 clean_tilecache:
 	rm -rf $(tilecache)/*

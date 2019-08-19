@@ -1,4 +1,6 @@
-all: seed.jpg seed-quick.jpg http.jpg http-quick.jpg
+all: seed.jpg http.jpg
+
+quick: seed-quick.jpg http-quick.jpg
 
 seed.jpg: seed.g results_seed.csv results_seed_4.csv
 	gnuplot seed.g
