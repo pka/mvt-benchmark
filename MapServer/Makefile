@@ -11,6 +11,7 @@ quick_bench:
 	make mapserver_ready
 	make bench_seed_region tile_stats clean_tilecache
 	make bench_seed_region_4 tile_stats
+	make tilechecks
 	# Tile serving benchmarks (with seeded tilecache)
 	make mvtserver_teardown
 	make mvtserver_ready bench_http duration=5 csv=http_quick.csv mvtserver_teardown
@@ -22,6 +23,7 @@ bench:
 	make mapserver_ready
 	make bench_seed tile_stats clean_tilecache
 	make bench_seed_4 tile_stats
+	make tilechecks
 	# Tile serving benchmarks (with seeded tilecache)
 	make mvtserver_teardown
 	make mvtserver_ready bench_http mvtserver_teardown
@@ -48,6 +50,11 @@ bench_seed: $(result_prefix)seed.csv
 bench_seed_4: $(result_prefix)seed_4.csv
 	time -f "$(ts),$(sw),%E,%U,%S" -a -o $< $(exec) mapcache_seed -c /etc/mapcache/mapcache.xml -t ms_mvt -z 1,6 -n 4
 	@echo Statistics written to $<
+
+tilechecks:
+	# Temporary test tile instead of missing 6/34/21.pbf. TMS schema?
+	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/42.mvt
+	docker-compose run gdal ogrinfo -al -so /var/data/tiles/ms_mvt/6/34/21.pbf
 
 # Tile serving benchmarks
 

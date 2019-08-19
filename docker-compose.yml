@@ -40,7 +40,7 @@ services:
     image: osgeo/gdal:alpine-small-latest
     volumes:
       - ./tiles:/var/data/tiles
-  # docker-compose run gdal ogrinfo -al -so /var/data/tiles/ne_countries/6/34/22.pbf
+  # docker-compose run gdal ogrinfo -al -so /var/data/tiles/ne_countries/6/34/21.pbf
 
   nginx-t-rex:
     image: nginx:alpine
