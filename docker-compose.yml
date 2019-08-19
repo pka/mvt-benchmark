@@ -35,3 +35,9 @@ services:
     volumes:
       - ./MapServer/mapcache_mvt.xml:/etc/mapcache/mapcache.xml:ro
       - ./tiles:/var/sig/tiles
+
+  gdal:
+    image: osgeo/gdal:alpine-small-latest
+    volumes:
+      - ./tiles:/var/data/tiles
+  # docker-compose run gdal ogrinfo -al -so /var/data/tiles/ne_countries/6/34/22.pbf
