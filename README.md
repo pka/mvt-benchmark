@@ -58,7 +58,7 @@ Full benchmark:
 
 Graph:
 
-    x-www-browser results/benchmark.jpg
+    x-www-browser bench/results/*.jpg
 
 Display map:
 
@@ -68,7 +68,7 @@ or
 
     docker-compose up nginx-ms
 
-    x-www-browser http://localhost:8088
+Open http://localhost:8088/map-countries.html
 
 Avoid browser caching by using a private window in Firefox e.g.
 
