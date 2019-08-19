@@ -1,0 +1,73 @@
+{
+  "attribution": "Natural Earth v4",
+  "basename": "ne_countries",
+  "bounds": [
+    -179.97277,
+    -83.05457,
+    179.99366,
+    83.23559
+  ],
+  "center": [
+    0.010445000000004256,
+    0.09050999999999476,
+    2
+  ],
+  "description": "ne_countries",
+  "format": "pbf",
+  "id": "ne_countries",
+  "maxzoom": 6,
+  "minzoom": 0,
+  "name": "ne_countries",
+  "scheme": "xyz",
+  "tiles": [
+    "http://localhost:8088/tiles/ms_mvt/{z}/{x}/{y}.mvt"
+  ],
+  "vector_layers": [
+    {
+      "description": "",
+      "fields": {
+        "adm0_a3": "",
+        "mapcolor7": ""
+      },
+      "id": "country",
+      "maxzoom": 6,
+      "minzoom": 0
+    },
+    {
+      "description": "",
+      "fields": {
+        "abbrev": "",
+        "name": ""
+      },
+      "id": "country-name",
+      "maxzoom": 6,
+      "minzoom": 0
+    },
+    {
+      "description": "",
+      "fields": {
+        "name": ""
+      },
+      "id": "geo-lines",
+      "maxzoom": 6,
+      "minzoom": 1
+    },
+    {
+      "description": "",
+      "fields": {},
+      "id": "land-border-country",
+      "maxzoom": 6,
+      "minzoom": 0
+    },
+    {
+      "description": "",
+      "fields": {
+        "adm0_a3": ""
+      },
+      "id": "state",
+      "maxzoom": 6,
+      "minzoom": 0
+    }
+  ],
+  "version": "2.0.0"
+}

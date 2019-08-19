@@ -16,7 +16,7 @@
   "sources": {
     "countries": {
       "type": "vector",
-      "url": "http://127.0.0.1:6767/ne_countries.json"
+      "url": "/tiles.json"
     }
   },
   "glyphs": "https://go-spatial.github.io/carto-assets/fonts/{fontstack}/{range}.pbf",

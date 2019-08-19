@@ -60,6 +60,18 @@ Graph:
 
     x-www-browser results/benchmark.jpg
 
+Display map:
+
+    docker-compose up nginx-t-rex
+
+or
+
+    docker-compose up nginx-ms
+
+    x-www-browser http://localhost:8088
+
+Avoid browser caching by using a private window in Firefox e.g.
+
 
 Add a new software
 ------------------

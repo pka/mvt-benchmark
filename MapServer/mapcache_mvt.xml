@@ -5,9 +5,9 @@
     <abstract>MVT Benchmark Test MapServer</abstract>
   </metadata>
 
-  <cache name="disk" type="disk">
+  <cache name="disk"type="disk" layout="template">
     <base>/var/sig/tiles</base>
-    <!--<symlink_blank/>-->
+    <template>/var/sig/tiles/{tileset}/{z}/{x}/{y}.{ext}</template>
   </cache>
 
   <format name="MVT" type="RAW">
