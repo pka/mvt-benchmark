@@ -2,13 +2,9 @@ MAP
   NAME 'vector_tile_test'
   SIZE 500 500
   MAXSIZE 4096
-
-
-
   PROJECTION
     "+init=epsg:3857"
   END
-
   OUTPUTFORMAT
     NAME "png8"
     DRIVER AGG/PNG8
@@ -34,25 +30,26 @@ MAP
       MVT_SIZE '512'
       WMS_TITLE 'Test mapfile for MVT development.'
       WMS_ONLINERESOURCE 'http://localhost/cgi-bin/mapserv?'
-      WMS_SRS 'epsg:3857 epsg:900913'
+      WMS_SRS 'epsg:3857 epsg:4326'
     END
   END
 
  LAYER
-  NAME "allcountries"
+  NAME "countries"
   TYPE POLYGON
   STATUS OFF
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
-  DATA "wkb_geometry from (SELECT * FROM ne_10m_admin_0_countries) as temp using unique ogc_fid using SRID=3857"    
-  # ogc_fid, wkb_geometry, adm0_a3, mapcolor7
+  DATA "wkb_geometry from (SELECT ogc_fid, name, adm0_a3, abbrev, mapcolor7, wkb_geometry FROM ne_10m_admin_0_countries) as temp using unique ogc_fid using SRID=3857"    
+  EXTENT -20037508.342789 -34679773.785951 20037508.342789 18428920.012950 # added to improve perfomance 
   DUMP true   
   METADATA
-    "wms_title" "allcountries"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_title" "countries"
+    "wms_srs" "epsg:4326 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"  
-    "gml_include_items" "mapcolor7"
+    "gml_include_items" "adm0_a3,mapcolor7" # default WxS behavior is to expose no attributes so we need to be explicit
+    "gml_mapcolor7_type" "integer"          # Otherwise things are treated as strings
   END
   PROJECTION
     "init=epsg:3857"
@@ -73,12 +70,13 @@ MAP
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points) as temp using unique ogc_fid using SRID=3857"    
+  EXTENT -19729044.151792 -15878634.348995 19872743.796075 12257650.087343 # added to improve perfomance 
   DUMP true   
   METADATA
     "wms_title" "country-name"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857"     
     "wms_feature_info_mime_type" "text/html" 
-    "gml_include_items" "abbrev, name" 
+    "gml_include_items" "abbrev,name"       # default WxS behavior is to expose no attributes so we need to be explicit
   END
   PROJECTION
     "init=epsg:3857"
@@ -90,33 +88,6 @@ MAP
     END
    END
   END
-   
-
- LAYER
-  NAME "italy"
-  TYPE POLYGON
-  STATUS OFF
-  CONNECTIONTYPE postgis
-  PROCESSING "CLOSE_CONNECTION=DEFER"
-  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
-  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, adm0_a3, mapcolor7 FROM ne_10m_admin_0_countries where adm0_a3 ilike 'ITA') as temp using unique ogc_fid using SRID=3857"    
-  DUMP true   
-  METADATA
-    "wms_title" "italy"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
-    "wms_feature_info_mime_type" "text/html"  
-  END
-  PROJECTION
-    "init=epsg:3857"
-  END   
-   CLASS
-    STYLE
-      OUTLINECOLOR 200 50 100
-      WIDTH 0.4
-    END
-   END
-  END
-
 
 # [[tileset.layer]]
 # name = "geo-lines"
@@ -137,19 +108,22 @@ MAP
 ####    sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines WHERE wkb_geometry && !bbox!"""
 
 LAYER
-  NAME "geo-lines"
+  NAME "geo-lines" # 1
   TYPE LINE
   STATUS OFF
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, name FROM ne_50m_geographic_lines) as temp using unique ogc_fid using SRID=3857"    
+  EXTENT -20037508.342789 -108777091.702336 20037508.342789 108777091.692373 # added to improve perfomance 
+  # zoom level 1 - 4
+  MINSCALE 27733946.6058614 # from steve L.'s calc  
   DUMP true   
   METADATA
     "wms_title" "geo-lines"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"
-    "gml_include_items" "name"  
+    "gml_include_items" "name"         # default WxS behavior is to expose no attributes so we need to be explicit
   END
   PROJECTION
     "init=epsg:3857"
@@ -162,6 +136,37 @@ LAYER
    END
 END
 
+
+LAYER
+  NAME "geo-lines" # 2
+  TYPE LINE
+  STATUS OFF
+  CONNECTIONTYPE postgis
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
+  DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, name FROM ne_10m_geographic_lines) as temp using unique ogc_fid using SRID=3857" 
+  EXTENT -20037508.342789 -108777091.702336 20037508.342789 108777091.692373 # added to improve perfomance  
+  DUMP true
+  # zoom level 5 - 6  
+  # from steve L.'s calc 
+  MINSCALE 6933486.65146535
+  MAXSCALE 27733946.6058614     
+  METADATA
+    "wms_title" "geo-lines"
+    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_feature_info_mime_type" "text/html"
+    "gml_include_items" "name"         # default WxS behavior is to expose no attributes so we need to be explicit
+  END
+  PROJECTION
+    "init=epsg:3857"
+  END   
+   CLASS
+    STYLE
+      COLOR 200 50 100
+      SIZE  1
+    END
+   END
+END
 
 #   [[tileset.layer]]
 #   name = "land-border-country"
@@ -184,10 +189,11 @@ END
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry FROM ne_10m_admin_0_boundary_lines_land) as temp using unique ogc_fid using SRID=3857"    
+  EXTENT -15696665.873520 -7385370.408338 15693557.650216 11093271.780665 # added to improve perfomance
   DUMP true   
   METADATA
     "wms_title" "land-border-country"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"
     # "gml_include_items" "ogc_fid"    
   END
@@ -221,11 +227,13 @@ END
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
   DATA "wkb_geometry from (SELECT ogc_fid, wkb_geometry, adm0_a3 FROM ne_10m_admin_1_states_provinces_lines) as temp using unique ogc_fid using SRID=3857"    
+  EXTENT -19830129.664953 -6317536.489545 19864809.763624 16305918.534663 # added to improve perfomance
   DUMP true   
   METADATA
     "wms_title" "state"
-    "wms_srs" "epsg:4326 epsg:900913 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857"     
     "wms_feature_info_mime_type" "text/html"  
+    "gml_include_items" "adm0_a3" # default WxS behavior is to expose no attributes so we need to be explicit
   END
   PROJECTION
     "init=epsg:3857"
