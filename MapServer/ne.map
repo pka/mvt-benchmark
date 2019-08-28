@@ -46,7 +46,7 @@ MAP
   DUMP true   
   METADATA
     "wms_title" "countries"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html"  
     "gml_include_items" "adm0_a3,mapcolor7" # default WxS behavior is to expose no attributes so we need to be explicit
     "gml_mapcolor7_type" "integer"          # Otherwise things are treated as strings
@@ -74,7 +74,7 @@ MAP
   DUMP true   
   METADATA
     "wms_title" "country-name"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html" 
     "gml_include_items" "abbrev,name"       # default WxS behavior is to expose no attributes so we need to be explicit
   END
@@ -121,7 +121,7 @@ LAYER
   DUMP true   
   METADATA
     "wms_title" "geo-lines"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html"
     "gml_include_items" "name"         # default WxS behavior is to expose no attributes so we need to be explicit
   END
@@ -138,7 +138,8 @@ END
 
 
 LAYER
-  NAME "geo-lines" # 2
+  NAME "geo-lines-2" # 2
+  # FIXME: gives <ServiceException code="LayerNotDefined"> msWMSLoadGetMapParams(): WMS server error. Invalid layer(s) given in the LAYERS parameter.)
   TYPE LINE
   STATUS OFF
   CONNECTIONTYPE postgis
@@ -153,7 +154,7 @@ LAYER
   MAXSCALE 27733946.6058614     
   METADATA
     "wms_title" "geo-lines"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html"
     "gml_include_items" "name"         # default WxS behavior is to expose no attributes so we need to be explicit
   END
@@ -193,7 +194,7 @@ END
   DUMP true   
   METADATA
     "wms_title" "land-border-country"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html"
     # "gml_include_items" "ogc_fid"    
   END
@@ -231,7 +232,7 @@ END
   DUMP true   
   METADATA
     "wms_title" "state"
-    "wms_srs" "epsg:4326 epsg:3857"     
+    "wms_srs" "epsg:4326 epsg:3857 epsg:900913"
     "wms_feature_info_mime_type" "text/html"  
     "gml_include_items" "adm0_a3" # default WxS behavior is to expose no attributes so we need to be explicit
   END
