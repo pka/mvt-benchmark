@@ -36,6 +36,14 @@ services:
       - ./MapServer/mapcache_mvt.xml:/etc/mapcache/mapcache.xml:ro
       - ./tiles:/var/sig/tiles
 
+  martin:
+    image: urbica/martin:latest
+    command: ["martin", "--config=/config.yaml"]
+    ports:
+      - "127.0.0.1:3000:3080"
+    volumes:
+      - ./martin/config.yaml:/config.yaml:ro
+
   gdal:
     image: osgeo/gdal:alpine-small-latest
     volumes:
