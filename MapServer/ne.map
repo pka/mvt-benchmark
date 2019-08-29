@@ -1,5 +1,5 @@
 MAP
-  NAME 'vector_tile_test'
+  NAME 'ne_countries'
   SIZE 500 500
   MAXSIZE 4096
   PROJECTION
@@ -37,7 +37,7 @@ MAP
  LAYER
   NAME "country"
   TYPE POLYGON
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
@@ -65,7 +65,7 @@ MAP
  LAYER
   NAME "country-name"
   TYPE POINT
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
@@ -110,7 +110,7 @@ MAP
 LAYER
   NAME "geo-lines" # 1
   TYPE LINE
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
@@ -138,10 +138,9 @@ END
 
 
 LAYER
-  NAME "geo-lines-2" # 2
-  # FIXME: gives <ServiceException code="LayerNotDefined"> msWMSLoadGetMapParams(): WMS server error. Invalid layer(s) given in the LAYERS parameter.)
+  NAME "geo-lines" # 2
   TYPE LINE
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
@@ -185,7 +184,7 @@ END
  LAYER
   NAME "land-border-country"
   TYPE LINE
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"
@@ -223,7 +222,7 @@ END
  LAYER
   NAME "state"
   TYPE LINE
-  STATUS OFF
+  STATUS ON
   CONNECTIONTYPE postgis
   PROCESSING "CLOSE_CONNECTION=DEFER"
   CONNECTION "user=mvtbench password=mvtbench dbname=mvtbench host=mvtbenchdb"

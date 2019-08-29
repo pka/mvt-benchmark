@@ -19,7 +19,7 @@
     <getmap>
       <params>
         <FORMAT>application/vnd.mapbox-vector-tile</FORMAT>
-        <LAYERS>country,country-name,geo-lines,land-border-country,state</LAYERS>
+        <LAYERS>ne_countries</LAYERS>
         <MAP>/etc/mapserver/mapserver.map</MAP>
       </params>
     </getmap>
