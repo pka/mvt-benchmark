@@ -25,6 +25,10 @@ bench:
 	make mvtserver_ready bench_http mvtserver_teardown
 	make data_teardown
 
+mapviewer:
+	docker-compose up nginx-t-rex
+	# Open viewer at http://localhost:8088/map-countries.html
+
 # Optional benchmarks
 
 t_rex_0_8_2_quick: /tmp/t-rex-v0.8.2-x86_64-unknown-linux-gnu.deb

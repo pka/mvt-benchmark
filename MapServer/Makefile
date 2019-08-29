@@ -27,6 +27,10 @@ bench:
 	make mvtserver_ready bench_http mvtserver_teardown
 	make data_teardown
 
+mapviewer:
+	docker-compose up nginx-ms
+	# Open viewer at http://localhost:8088/map-countries.html
+
 # Seeding benchmarks
 
 data_ready:

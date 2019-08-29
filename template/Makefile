@@ -35,6 +35,10 @@ bench:
 	# Cleanup tile cache
 	# Stop Database
 
+view_map:
+    # docker-compose up nginx-$sw
+    # Open viewer at http://localhost:8088/map-countries.html
+
 # Seeding benchmark example/skeleton targets
 
 data_ready:

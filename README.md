@@ -62,11 +62,11 @@ Graph:
 
 Display map:
 
-    docker-compose up nginx-t-rex
+    cd t-rex; make mapviewer
 
 or
 
-    docker-compose up nginx-ms
+    cd MapServer; make mapviewer
 
 Open http://localhost:8088/map-countries.html
 
