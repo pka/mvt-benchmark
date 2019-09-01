@@ -16,6 +16,7 @@ Tileset definition
 * Tileset name: `ne_countries`
 * Maxzoom level for tile data: 6
 * Tile size: 4096
+* Tile format: MVT V2 gzipped (gzip recommended, but not mandatory)
 * SRS (data and tiles): EPSG:3857 (Web Mercator)
 
 Layer definition:
