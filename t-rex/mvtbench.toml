@@ -35,7 +35,7 @@ geometry_type = "POINT"
 srid = 3857
 buffer_size = 0
 [[tileset.layer.query]]
-sql = """SELECT wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points WHERE wkb_geometry && !bbox!"""
+sql = """SELECT wkb_geometry, abbrev, name FROM ne_10m_admin_0_country_points"""
 
 [[tileset.layer]]
 name = "geo-lines"
@@ -48,11 +48,11 @@ simplify = false
 # ne_50m_geographic_lines
 minzoom = 1
 maxzoom = 4
-sql = """SELECT wkb_geometry, name FROM ne_50m_geographic_lines WHERE wkb_geometry && !bbox!"""
+sql = """SELECT wkb_geometry, name FROM ne_50m_geographic_lines"""
 [[tileset.layer.query]]
 # ne_10m_geographic_lines
 minzoom = 5
-sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines WHERE wkb_geometry && !bbox!"""
+sql = """SELECT wkb_geometry, name FROM ne_10m_geographic_lines"""
 
 [[tileset.layer]]
 name = "land-border-country"
