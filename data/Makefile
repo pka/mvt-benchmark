@@ -6,7 +6,7 @@ createdb:
 	psql $(DBNAME) -c "CREATE EXTENSION postgis"
 
 gpkgrestore:
-	ogr2ogr -f PostgreSQL PG:dbname=$(DBNAME) mvtbench.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=wkb_geometry -f PostgreSQL PG:dbname=$(DBNAME) mvtbench.gpkg
 
 dockerbuild:
 	docker build -t sourcepole/mvtbenchdb .
