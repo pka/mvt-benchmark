@@ -3,12 +3,12 @@ services:
   mvtbenchdb:
     #build:
     #  context: ./data
-    image: sourcepole/mvtbenchdb
+    image: sourcepole/mvtbenchdb:v1.2
     ports:
       - "127.0.0.1:5439:5432"
 
   t-rex:
-    image: sourcepole/t-rex
+    image: sourcepole/t-rex:v0.14.3
     ports:
       - "127.0.0.1:6767:6767"
     volumes:

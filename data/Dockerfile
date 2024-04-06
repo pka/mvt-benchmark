@@ -11,5 +11,5 @@ ENV POSTGRES_DB=mvtbench
 ENV POSTGRES_USER=mvtbench
 ENV POSTGRES_PASSWORD=mvtbench
 
-COPY mvtbench.gpkg Makefile /
+COPY ne_extracts_3857.gpkg Makefile /
 COPY setup-db.sh /docker-entrypoint-initdb.d/
